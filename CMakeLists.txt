@@ -68,6 +68,10 @@ include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/simple )
 include_directories ( ${CMAKE_CURRENT_BINARY_DIR} )
 
 set(PUBLIC_HDRS
+    api/lzma.h
+)
+
+set(PUBLIC_LZMA_HDRS
     api/lzma/base.h
     api/lzma/bcj.h
     api/lzma/block.h
@@ -82,7 +86,6 @@ set(PUBLIC_HDRS
     api/lzma/stream_flags.h
     api/lzma/version.h
     api/lzma/vli.h
-    api/lzma.h
 )
 
 set(PRIVATE_HDRS
@@ -383,12 +386,12 @@ message(STATUS "${PROJECT_NAME} version ${VERSION}")
 
 if(BUILD_SHARED_LIBS)
     set(LIB_NAME ${PROJECT_NAME})
-    add_library(${LIB_NAME} SHARED ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS})
+    add_library(${LIB_NAME} SHARED ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS} ${PUBLIC_LZMA_HDRS})
     set_target_properties(${LIB_NAME} PROPERTIES DEFINE_SYMBOL XML2_DLL)
     set_target_properties(${LIB_NAME} PROPERTIES SOVERSION 1)
 else()    
     set(LIB_NAME ${PROJECT_NAME}static)
-    add_library(${LIB_NAME} STATIC ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS})
+    add_library(${LIB_NAME} STATIC ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS} ${PUBLIC_LZMA_HDRS})
     set_target_properties(${LIB_NAME} PROPERTIES SOVERSION 1)
 endif()   
 
@@ -417,5 +420,6 @@ if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
 endif()
 if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL )
     install(FILES ${PUBLIC_HDRS} DESTINATION "${INSTALL_INC_DIR}")
+    install(FILES ${PUBLIC_LZMA_HDRS} DESTINATION "${INSTALL_INC_DIR}/lzma")
 endif()
 
