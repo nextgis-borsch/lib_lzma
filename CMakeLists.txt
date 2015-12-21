@@ -382,7 +382,7 @@ if(WIN32 AND BUILD_SHARED_LIBS)
   set(SRCS ${SRCS} liblzma_w32res.rc)
 endif()
 
-message(STATUS "${PROJECT_NAME} version ${VERSION}")    
+report_version(${PROJECT_NAME} ${VERSION})    
 
 if(BUILD_SHARED_LIBS)
     set(LIB_NAME ${PROJECT_NAME})
