@@ -24,12 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-macro(lib_add_definitions defn)
-  if("${${defn}}" STREQUAL "1")
-    add_definitions(-D${defn})
-  endif()
-endmacro()
-
 set(AC_APPLE_UNIVERSAL_BUILD FALSE)
 set(ASSUME_RAM 128)
 
@@ -41,23 +35,22 @@ include(CheckStructHasMember)
 include(CheckTypeSize)
 include(TestBigEndian)
 
+#set(gt_expression_test_code  "+ * ngettext (\"\", \"\", 0)")
+set(gt_expression_test_code  "")
+
 check_c_source_compiles("
     #include <libintl.h>
     extern int _nl_msg_cat_cntr;
-    extern
-    #ifdef __cplusplus
-    \"C\"
-    #endif
-    const char *_nl_expand_alias (const char *);
+    extern int *_nl_domain_bindings;
     int main ()
     {
         bindtextdomain (\"\", \"\");
-        return * gettext (\"\")$gt_expression_test_code + _nl_msg_cat_cntr + *_nl_expand_alias (\"\");
-    }" ENABLE_NLS)
-    
+        return * gettext (\"\")${gt_expression_test_code} + _nl_msg_cat_cntr + *_nl_domain_bindings;
+    }
+    " ENABLE_NLS)
+#option ( ENABLE_NLS "Translation of program messages to the user's native language is requested" OFF)     
   
 check_include_files("sys/types.h" HAVE_SYS_TYPES_H)
-lib_add_definitions(HAVE_SYS_TYPES_H)
 
 # FreeBSD  sys/types.h + sha256.h      libmd    SHA256_CTX     SHA256_Init
 # NetBSD   sys/types.h + sha2.h                 SHA256_CTX     SHA256_Init
@@ -67,7 +60,6 @@ lib_add_definitions(HAVE_SYS_TYPES_H)
 # Darwin   CommonCrypto/CommonDigest.h          CC_SHA256_CTX  CC_SHA256_Init
 
 check_include_files("CommonCrypto/CommonDigest.h" HAVE_COMMONCRYPTO_COMMONDIGEST_H)
-lib_add_definitions(HAVE_COMMONCRYPTO_COMMONDIGEST_H)
 
 if(HAVE_COMMONCRYPTO_COMMONDIGEST_H)
     set(HAVE_CC_SHA256_CTX TRUE)
@@ -75,7 +67,6 @@ if(HAVE_COMMONCRYPTO_COMMONDIGEST_H)
 endif()
 
 check_include_files("sha256.h" HAVE_SHA256_H)
-lib_add_definitions(HAVE_SHA256_H)
 
 if(HAVE_SHA256_H)
     set(HAVE_SHA256_CTX TRUE)
@@ -83,7 +74,6 @@ if(HAVE_SHA256_H)
 endif()
 
 check_include_files("sha2.h" HAVE_SHA2_H)
-lib_add_definitions(HAVE_SHA2_H)
 
 if(HAVE_SHA2_H)
     check_function_exists("SHA256_Init" HAVE_SHA256_INIT)
@@ -98,7 +88,6 @@ if(HAVE_SHA2_H)
 endif()
 
 check_include_files("minix/sha2.h" HAVE_MINIX_SHA2_H)
-lib_add_definitions(HAVE_MINIX_SHA2_H)
 
 if(HAVE_MINIX_SHA2_H)
     set(HAVE_SHA256_CTX TRUE)
@@ -216,7 +205,6 @@ if(HAVE_DECODER_ARM OR HAVE_DECODER_ARMTHUMB OR HAVE_DECODER_IA64 OR HAVE_DECODE
 endif()
 
 check_include_files("dlfcn.h" HAVE_DLFCN_H)
-lib_add_definitions(HAVE_DLFCN_H)
 
 option(HAVE_ENCODER_ARM "Enable arm encoder to build" ON)
 option(HAVE_ENCODER_ARMTHUMB "Enable armthumb encoder to build" ON)
@@ -237,26 +225,19 @@ if(HAVE_ENCODER_ARM OR HAVE_ENCODER_ARMTHUMB OR HAVE_ENCODER_IA64 OR HAVE_ENCODE
 endif()
 
 check_include_files("fcntl.h" HAVE_FCNTL_H) 
-lib_add_definitions(HAVE_FCNTL_H)
 
 check_function_exists("futimens" HAVE_FUTIMENS)
 check_function_exists("futimes" HAVE_FUTIMES)
 check_function_exists("futimesat" HAVE_FUTIMESAT)
 
 check_include_files("getopt.h" HAVE_GETOPT_H) 
-lib_add_definitions(HAVE_GETOPT_H)
 
 check_function_exists("getopt_long" HAVE_GETOPT_LONG)
 check_function_exists("gettext" HAVE_GETTEXT)
 
 check_include_files("immintrin.h" HAVE_IMMINTRIN_H) 
-lib_add_definitions(HAVE_IMMINTRIN_H)
-
 check_include_files("inttypes.h" HAVE_INTTYPES_H) 
-lib_add_definitions(HAVE_INTTYPES_H)
-
 check_include_files("limits.h" HAVE_LIMITS_H) 
-lib_add_definitions(HAVE_LIMITS_H)
 
 check_c_source_compiles("
     #include <CoreFoundation/CFPreferences.h>
@@ -278,7 +259,6 @@ check_c_source_compiles("
     " HAVE_MBRTOWC)
   
 check_include_files("memory.h" HAVE_MEMORY_H)
-lib_add_definitions(HAVE_MEMORY_H)    
 
 #hc3,hc4,bt2,bt3,bt4
 option(HAVE_MF_BT2 "Enable bt2 match finder" ON)
@@ -304,22 +284,14 @@ option(ENABLE_THREADS "Enable threading support" ON)
 option(ENABLE_ASSEMBLER "Enable assembler optimizations" ON)
     
 check_include_files(stdbool.h HAVE_STDBOOL_H)
-lib_add_definitions(HAVE_STDBOOL_H)
 if(NOT HAVE_STDBOOL_H)
   check_type_size(_Bool _BOOL)
 endif()    
    
 check_include_files("stdint.h" HAVE_STDINT_H)
-lib_add_definitions(HAVE_STDINT_H)
-
 check_include_files("stdlib.h" HAVE_STDLIB_H)
-lib_add_definitions(HAVE_STDLIB_H)
-
 check_include_files("strings.h" HAVE_STRINGS_H)
-lib_add_definitions(HAVE_STRINGS_H)
-
 check_include_files("string.h" HAVE_STRING_H)
-lib_add_definitions(HAVE_STRING_H)
 
 check_struct_has_member("struct stat" st_atimensec "sys/stat.h" HAVE_STRUCT_STAT_ST_ATIMENSEC)
 check_struct_has_member("struct stat" st_atimespec.tv_nsec "sys/stat.h" HAVE_STRUCT_STAT_ST_ATIMESPEC_TV_NSEC)
@@ -328,25 +300,12 @@ check_struct_has_member("struct stat" st_atim.tv_nsec "sys/stat.h" HAVE_STRUCT_S
 check_struct_has_member("struct stat" st_uatime "sys/stat.h" HAVE_STRUCT_STAT_ST_UATIME   )
 
 check_include_files("sys/byteorder.h" HAVE_SYS_BYTEORDER_H)
-lib_add_definitions(HAVE_SYS_BYTEORDER_H)
-
 check_include_files("sys/endian.h" HAVE_SYS_ENDIAN_H)
-lib_add_definitions(HAVE_SYS_ENDIAN_H)
-
 check_include_files("sys/param.h" HAVE_SYS_PARAM_H)
-lib_add_definitions(HAVE_SYS_PARAM_H)
-
 check_include_files("sys/stat.h" HAVE_SYS_STAT_H)
-lib_add_definitions(HAVE_SYS_STAT_H)
-
+check_include_files("sys/time.h" HAVE_SYS_TIME_H)    
+check_include_files("sys/types.h" HAVE_SYS_TYPES_H)   
 check_include_files("sys/time.h" HAVE_SYS_TIME_H)
-lib_add_definitions(HAVE_SYS_TIME_H)    
-    
-check_include_files("sys/types.h" HAVE_SYS_TYPES_H)
-lib_add_definitions(HAVE_SYS_TYPES_H) 
-   
-check_include_files("sys/time.h" HAVE_SYS_TIME_H)
-lib_add_definitions(HAVE_SYS_TIME_H) 
     
 check_type_size(uintptr_t UINTPTR_T)
 if(NOT HAVE_UINTPTR_T)
@@ -358,10 +317,8 @@ if(NOT HAVE_UINTPTR_T)
 endif()    
    
 check_include_files("unistd.h" HAVE_UNISTD_H)
-lib_add_definitions(HAVE_UNISTD_H)     
     
-check_function_exists("utime" HAVE_UTIME)
-    
+check_function_exists("utime" HAVE_UTIME)    
 check_function_exists("utimes" HAVE_UTIMES)
     
 check_c_source_compiles("
@@ -375,7 +332,7 @@ check_c_source_compiles("
     }    
     " HAVE_VISIBILITY)
     
-check_function_exists("wcwidth" HAVE_WCWIDTH)    
+check_function_exists("wcwidth" HAVE_WCWIDTH)   
   
 check_symbol_exists("_mm_movemask_epi8" "immintrin.h" HAVE__MM_MOVEMASK_EPI8)    
    
