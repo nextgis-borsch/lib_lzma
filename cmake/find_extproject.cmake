@@ -93,10 +93,8 @@ function(find_extproject name)
    
     if(NOT EXISTS "${EP_BASE}/Source/${name}_EP/.git")
         execute_process(COMMAND ${GIT_EXECUTABLE} clone ${EP_URL}/${repo_name} ${name}_EP
-           WORKING_DIRECTORY  ${EP_BASE}/Source RESULT_VARIABLE _rv)
-        if(${_rv} EQUAL 0) 
-            set(${name}_FOUND TRUE PARENT_SCOPE)  
-        endif()    
+           WORKING_DIRECTORY  ${EP_BASE}/Source)
+   
     else()    
         execute_process(COMMAND ${GIT_EXECUTABLE} pull
            WORKING_DIRECTORY  ${EP_BASE}/Source/${name}_EP)    
@@ -104,8 +102,12 @@ function(find_extproject name)
      
     execute_process(COMMAND ${CMAKE_COMMAND} ${EP_BASE}/Source/${name}_EP
        ${find_extproject_CMAKE_ARGS}
-       WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP )
-         
+       WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP RESULT_VARIABLE _rv)
+    
+    if(${_rv} EQUAL 0) 
+        set(${name}_FOUND TRUE PARENT_SCOPE)  
+    endif()          
+    
     include(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake)  
 
     add_dependencies(${repo_project} ${name}_EP)  

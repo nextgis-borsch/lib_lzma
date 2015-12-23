@@ -26,8 +26,7 @@
 
 cmake_minimum_required(VERSION 2.8.10 FATAL_ERROR)
 
-set(PROJECT_NAME "lzma")
-project(${PROJECT_NAME} C)
+project(lzma C)
 
 # some init settings
 set(CMAKE_COLOR_MAKEFILE ON)
@@ -387,7 +386,7 @@ report_version(${PROJECT_NAME} ${VERSION})
 if(BUILD_SHARED_LIBS)
     set(LIB_NAME ${PROJECT_NAME})
     add_library(${LIB_NAME} SHARED ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS} ${PUBLIC_LZMA_HDRS})
-    set_target_properties(${LIB_NAME} PROPERTIES DEFINE_SYMBOL XML2_DLL)
+    set_target_properties(${LIB_NAME} PROPERTIES DEFINE_SYMBOL LZMA_DLL)
     set_target_properties(${LIB_NAME} PROPERTIES SOVERSION 1)
 else()    
     set(LIB_NAME ${PROJECT_NAME}static)
