@@ -34,9 +34,6 @@ function(find_extproject name)
     set(multiValueArgs CMAKE_ARGS)
     cmake_parse_arguments(find_extproject "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     
-    # get some properties from <cmakemodules>/findext${name}.cmake file
-    include(FindExt${name})
-    
     # set default third party lib path
     if(NOT DEFINED EP_BASE)
         set(EP_BASE "${CMAKE_BINARY_DIR}/third-party")
@@ -79,6 +76,10 @@ function(find_extproject name)
         message(STATUS "${_variableName}=${${_variableName}}")
         list(APPEND find_extproject_CMAKE_ARGS -D${_variableName}=${${_variableName}})
     endforeach()
+    
+        
+    # get some properties from <cmakemodules>/findext${name}.cmake file
+    include(FindExt${name})
   
     ExternalProject_Add(${name}_EP
         GIT_REPOSITORY ${EP_URL}/${repo_name}
