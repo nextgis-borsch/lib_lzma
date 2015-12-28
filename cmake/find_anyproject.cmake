@@ -53,6 +53,8 @@ function(find_anyproject name)
         if(WITH_${name}_EXTERNAL)
             include(find_extproject)
             find_extproject(${name} ${ARGN})
+            
+            message(STATUS "WITHOPT ${WITHOPT}")
         else()
             # transfer some input options to find_package arguments
             if(find_anyproject_VERSION)
