@@ -44,7 +44,7 @@ function(find_anyproject name)
     endif()
     
     set(WITHOPT "${WITHOPT}option(WITH_${name} \"Set ON to use ${name}\" ${_WITH_OPTION_ON})\n")
-    set(WITHOPT "${WITHOPT}option(WITH_${name}_EXTERNAL \"Set ON to use external ${name}\" OFF)\n" PARENT_SCOPE)
+    set(WITHOPT "${WITHOPT}option(WITH_${name}_EXTERNAL \"Set ON to use external ${name}\" OFF)\n")
 
     option(WITH_${name} "Set ON to use ${name}" ${_WITH_OPTION_ON})
 
@@ -53,8 +53,6 @@ function(find_anyproject name)
         if(WITH_${name}_EXTERNAL)
             include(find_extproject)
             find_extproject(${name} ${ARGN})
-            
-            message(STATUS "WITHOPT ${WITHOPT}")
         else()
             # transfer some input options to find_package arguments
             if(find_anyproject_VERSION)
@@ -89,9 +87,10 @@ function(find_anyproject name)
         include_directories(${${name}_INCLUDE_DIRS})
         set(TARGET_LINK_LIB ${TARGET_LINK_LIB} ${${name}_LIBRARIES} PARENT_SCOPE)
     else()
-        set(TARGET_LINK_LIB ${TARGET_LINK_LIB} "" PARENT_SCOPE)   
-        set(DEPENDENCY_LIB ${DEPENDENCY_LIB} "" PARENT_SCOPE)    
+        set(TARGET_LINK_LIB ${TARGET_LINK_LIB} PARENT_SCOPE)   
+        set(DEPENDENCY_LIB ${DEPENDENCY_LIB} PARENT_SCOPE)    
     endif()
+    set(WITHOPT ${WITHOPT} PARENT_SCOPE))
 endfunction()
 
 function(target_link_extlibraries name)
