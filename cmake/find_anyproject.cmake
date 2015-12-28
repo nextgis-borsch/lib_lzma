@@ -90,7 +90,7 @@ function(find_anyproject name)
         set(TARGET_LINK_LIB ${TARGET_LINK_LIB} PARENT_SCOPE)   
         set(DEPENDENCY_LIB ${DEPENDENCY_LIB} PARENT_SCOPE)    
     endif()
-    set(WITHOPT ${WITHOPT} PARENT_SCOPE))
+    set(WITHOPT ${WITHOPT} PARENT_SCOPE)
 endfunction()
 
 function(target_link_extlibraries name)
