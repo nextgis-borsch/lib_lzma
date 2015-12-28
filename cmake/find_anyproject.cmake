@@ -25,8 +25,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-set(TARGET_LINK_LIB ${TARGET_LINK_LIB} "")
-set(DEPENDENCY_LIB ${DEPENDENCY_LIB} "")
+set(TARGET_LINK_LIB) # ${TARGET_LINK_LIB} ""
+set(DEPENDENCY_LIB) # ${DEPENDENCY_LIB} ""
 set(WITHOPT ${WITHOPT} "")
 
 function(find_anyproject name)
@@ -95,9 +95,9 @@ endfunction()
 function(target_link_extlibraries name)
     if(DEPENDENCY_LIB)
         add_dependencies(${name} ${DEPENDENCY_LIB})  
-    endif()
-    list(REMOVE_DUPLICATES TARGET_LINK_LIB)
+    endif()    
     if(TARGET_LINK_LIB)
+        list(REMOVE_DUPLICATES TARGET_LINK_LIB)
         target_link_libraries(${name} ${TARGET_LINK_LIB})
     endif()
     file(WRITE ${CMAKE_BINARY_DIR}/ext_options.cmake ${WITHOPT})

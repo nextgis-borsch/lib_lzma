@@ -66,8 +66,17 @@ function(find_extproject name)
         list(APPEND find_extproject_CMAKE_ARGS -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS})
     endif()
     
-    if(EXISTS ${EP_BASE}/Build/${name}_EP/ext_options.cmake) 
+    if(EXISTS ${EP_BASE}/Build/${name}_EP/ext_options.cmake)         
         include(${EP_BASE}/Build/${name}_EP/ext_options.cmake)
+        
+        # TODO: read lines and store them in this project ext_options.cmake
+        #file(STRINGS ${EP_BASE}/Build/${name}_EP/ext_options.cmake _OPTIONS)
+        #foreach(_OPTION ${_OPTIONS})
+        #    set(WITHOPT "${WITHOPT}${_OPTION}\n")
+        #endforeach()
+        #set(WITHOPT ${WITHOPT} "" PARENT_SCOPE)   
+        
+        # add include into  ext_options.cmake    
     endif()
     
     get_cmake_property(_variableNames VARIABLES)
