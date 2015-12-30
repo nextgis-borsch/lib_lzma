@@ -51,6 +51,12 @@ if(ICONV_FOUND)
     set(HAVE_ICONV TRUE)
 endif()
 
+if(MSVC)
+    if(CMAKE_C_COMPILER_VERSION VERSION_LESS "18.0.40629.1")
+        message(FATAL_ERROR "The compiled version is less than VC 2013 SP 5")
+    endif()
+endif()
+
 include(configure)
 
 configure_file(${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY)
@@ -98,6 +104,8 @@ set(PRIVATE_HDRS
 	common/block_decoder.h
 	common/filter_decoder.h
 	common/stream_decoder.h
+    common/tuklib_physmem.h
+    check/check.h
 )
 
 set(SRCS
@@ -127,10 +135,20 @@ set(SRCS
     common/filter_flags_decoder.c
     common/index_decoder.c
     common/index_hash.c
+    common/index.c
     common/stream_buffer_decoder.c
     common/stream_decoder.c
     common/stream_flags_decoder.c
     common/vli_decoder.c
+    common/common.c
+    common/block_util.c
+    common/easy_preset.c
+    common/filter_common.c
+    common/hardware_physmem.c
+    common/stream_flags_common.c
+    common/vli_size.c
+    common/tuklib_physmem.c
+    check/check.c
 )
 
 if(ENABLE_THREADS)
@@ -379,6 +397,7 @@ endif()
 
 if(WIN32 AND BUILD_SHARED_LIBS)
   set(SRCS ${SRCS} liblzma_w32res.rc)
+  add_definitions(-DDLL_EXPORT -D_WINDOWS -D_USRDLL -DLIBLZMADLL_EXPORTS)
 endif()
 
 report_version(${PROJECT_NAME} ${VERSION})    

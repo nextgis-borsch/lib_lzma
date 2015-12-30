@@ -281,7 +281,8 @@ check_c_source_compiles("
     
 option(HAVE_SMALL "Check if small size is preferred over speed" OFF)
 option(ENABLE_THREADS "Enable threading support" ON)
-option(ENABLE_ASSEMBLER "Enable assembler optimizations" ON)
+# default is on but no code to build assembler crc32_x86.S via libtool  
+option(ENABLE_ASSEMBLER "Enable assembler optimizations" OFF)
     
 check_include_files(stdbool.h HAVE_STDBOOL_H)
 if(NOT HAVE_STDBOOL_H)
@@ -405,6 +406,7 @@ set(PACKAGE ${PROJECT_NAME})
 set(PACKAGE_NAME "lib${PACKAGE}")
 set(PACKAGE_VERSION ${VERSION})
 set(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
+set(PACKAGE_URL "http://tukaani.org/xz/")
 
 configure_file(${CMAKE_MODULE_PATH}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h IMMEDIATE @ONLY)
 add_definitions(-DHAVE_CONFIG_H) 
