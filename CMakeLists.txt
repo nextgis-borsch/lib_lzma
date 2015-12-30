@@ -52,9 +52,11 @@ if(ICONV_FOUND)
 endif()
 
 if(MSVC)
-    if(CMAKE_C_COMPILER_VERSION VERSION_LESS "18.0.40629.1")
+    if(CMAKE_C_COMPILER_VERSION VERSION_LESS "18.0.40629.0")
         message(FATAL_ERROR "The compiled version is less than VC 2013 SP 5")
     endif()
+    
+    add_definitions (-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_CRT_NON_CONFORMING_SWPRINTFS -D_CRT_SECURE_NO_DEPRECATE)
 endif()
 
 include(configure)
