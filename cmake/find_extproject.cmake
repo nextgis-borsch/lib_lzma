@@ -113,8 +113,8 @@ function(find_extproject name)
     
     # set some arguments          
     list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_GENERATOR=${CMAKE_GENERATOR})       
-    list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})       
-    list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_CONFIGURATION_TYPES=${CMAKE_CONFIGURATION_TYPES})       
+    # list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})       
+    # list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_CONFIGURATION_TYPES=${CMAKE_CONFIGURATION_TYPES})       
     
     if(EXISTS ${EP_BASE}/Build/${name}_EP/ext_options.cmake)         
         include(${EP_BASE}/Build/${name}_EP/ext_options.cmake)
