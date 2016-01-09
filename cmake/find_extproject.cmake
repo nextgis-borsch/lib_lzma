@@ -171,15 +171,15 @@ function(find_extproject name)
     if(HAS_CHANGES OR NOT EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
         execute_process(COMMAND ${CMAKE_COMMAND} ${EP_BASE}/Source/${name}_EP
            ${find_extproject_CMAKE_ARGS}
-           WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP RESULT_VARIABLE _rv)
-        
-        if(${_rv} EQUAL 0) 
-            string(TOUPPER ${name}_FOUND IS_FOUND)
-            set(${IS_FOUND} TRUE PARENT_SCOPE)  
-        endif()          
+           WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP)  
     endif()
     include(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake) 
     get_imported_targets(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake IMPOTED_TARGETS)
+    
+    if(EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
+        string(TOUPPER ${name}_FOUND IS_FOUND)
+        set(${IS_FOUND} TRUE PARENT_SCOPE)
+    endif()
     
     add_dependencies(${IMPOTED_TARGETS} ${name}_EP)  
     
