@@ -168,7 +168,7 @@ function(find_extproject name)
         endif()        
     endif()
     
-    if(HAS_CHANGES)
+    if(HAS_CHANGES OR NOT EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
         execute_process(COMMAND ${CMAKE_COMMAND} ${EP_BASE}/Source/${name}_EP
            ${find_extproject_CMAKE_ARGS}
            WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP RESULT_VARIABLE _rv)
