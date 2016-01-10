@@ -153,8 +153,8 @@ function(find_extproject name)
         color_message("Git clone ${repo_name} ...")
         execute_process(COMMAND ${GIT_EXECUTABLE} clone ${EP_URL}/${repo_name} ${name}_EP
            WORKING_DIRECTORY  ${EP_BASE}/Source)
-        execute_process(COMMAND ${GIT_EXECUTABLE} checkout master
-            WORKING_DIRECTORY  ${EP_BASE}/Source/${name}_EP)
+        #execute_process(COMMAND ${GIT_EXECUTABLE} checkout master
+        #    WORKING_DIRECTORY  ${EP_BASE}/Source/${name}_EP)
         file(WRITE ${EP_BASE}/Stamp/${name}_EP/${name}_EP-gitclone-lastrun.txt "")
     else() 
         check_updates(${EP_BASE}/Stamp/${name}_EP/${name}_EP-gitpull.txt ${PULL_UPDATE_PERIOD} CHECK_UPDATES)
@@ -178,6 +178,10 @@ function(find_extproject name)
         endif()        
     endif()
     
+    if(find_extproject_CMAKE_ARGS NOT EQUAL find_extproject_CMAKE_ARGS_TMP)
+        set(HAS_CHANGES TRUE)
+    endif()
+    
     if(HAS_CHANGES OR NOT EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
         execute_process(COMMAND ${CMAKE_COMMAND} ${EP_BASE}/Source/${name}_EP
            ${find_extproject_CMAKE_ARGS}
@@ -185,6 +189,7 @@ function(find_extproject name)
     endif()
     include(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake) 
     get_imported_targets(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake IMPOTED_TARGETS)
+    set(find_extproject_CMAKE_ARGS_TMP ${find_extproject_CMAKE_ARGS} CACHE INTERNAL "external options" FORCE)
     
     if(EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
         string(TOUPPER ${name}_FOUND IS_FOUND)
