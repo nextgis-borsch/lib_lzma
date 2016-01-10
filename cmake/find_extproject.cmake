@@ -178,7 +178,7 @@ function(find_extproject name)
         endif()        
     endif()
     
-    if(find_extproject_CMAKE_ARGS NOT EQUAL find_extproject_CMAKE_ARGS_TMP)
+    if(NOT DEFINED find_extproject_CMAKE_ARGS_TMP OR NOT (find_extproject_CMAKE_ARGS EQUAL find_extproject_CMAKE_ARGS_TMP))
         set(HAS_CHANGES TRUE)
     endif()
     
