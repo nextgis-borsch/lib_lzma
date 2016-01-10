@@ -23,7 +23,11 @@
 set(TARGET_LINK_LIB) # ${TARGET_LINK_LIB} ""
 set(DEPENDENCY_LIB) # ${DEPENDENCY_LIB} ""
 set(WITHOPT ${WITHOPT} "")
-
+cmake_policy(VERSION 2.8.12)
+if (POLICY CMP0022)
+  cmake_policy(SET CMP0022 NEW)
+endif()
+        
 function(find_anyproject name)
 
     include (CMakeParseArguments)
@@ -112,7 +116,6 @@ function(target_link_extlibraries name)
         add_dependencies(${name} ${DEPENDENCY_LIB})  
     endif()    
     if(TARGET_LINK_LIB)
-        cmake_policy(SET CMP0022 NEW)
         list(REMOVE_DUPLICATES TARGET_LINK_LIB)
         target_link_libraries(${name} PRIVATE ${TARGET_LINK_LIB})
     endif()
