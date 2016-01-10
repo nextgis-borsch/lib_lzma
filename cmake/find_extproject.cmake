@@ -112,8 +112,10 @@ function(find_extproject name)
     endif()
     
     # set some arguments          
-    list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_GENERATOR=${CMAKE_GENERATOR})       
-    # list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})       
+    list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_GENERATOR=${CMAKE_GENERATOR})    
+    if(CMAKE_BUILD_TYPE)
+        list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
+    endif()        
     # list(APPEND find_extproject_CMAKE_ARGS -DCMAKE_CONFIGURATION_TYPES=${CMAKE_CONFIGURATION_TYPES})       
     
     if(EXISTS ${EP_BASE}/Build/${name}_EP/ext_options.cmake)         
@@ -151,6 +153,9 @@ function(find_extproject name)
         color_message("Git clone ${repo_name} ...")
         execute_process(COMMAND ${GIT_EXECUTABLE} clone ${EP_URL}/${repo_name} ${name}_EP
            WORKING_DIRECTORY  ${EP_BASE}/Source)
+        execute_process(COMMAND ${GIT_EXECUTABLE} checkout master
+            WORKING_DIRECTORY  ${EP_BASE}/Source/${name}_EP)
+        file(WRITE ${EP_BASE}/Stamp/${name}_EP/${name}_EP-gitclone-lastrun.txt "")
     else() 
         check_updates(${EP_BASE}/Stamp/${name}_EP/${name}_EP-gitpull.txt ${PULL_UPDATE_PERIOD} CHECK_UPDATES)
         if(CHECK_UPDATES)
