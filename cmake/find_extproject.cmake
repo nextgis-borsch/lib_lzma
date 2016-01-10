@@ -124,7 +124,6 @@ function(find_extproject name)
         set(WITHOPT "${WITHOPT}include(${EP_BASE}/Build/${name}_EP/ext_options.cmake)\n" PARENT_SCOPE)    
     endif()
     
-    set(${name}_WITHARGS "BUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}")
     get_cmake_property(_variableNames VARIABLES)
     string (REGEX MATCHALL "(^|;)WITH_[A-Za-z0-9_]*" _matchedVars "${_variableNames}") 
     foreach(_variableName ${_matchedVars})
@@ -132,7 +131,6 @@ function(find_extproject name)
             message(STATUS "${_variableName}=${${_variableName}}")
         endif()    
         list(APPEND find_extproject_CMAKE_ARGS -D${_variableName}=${${_variableName}})
-        set(${name}_WITHARGS ${${name}_WITHARGS} "${_variableName}=${${_variableName}}")
     endforeach()
     
         
@@ -150,7 +148,6 @@ function(find_extproject name)
       return()
     endif()
    
-    set(HAS_CHANGES TRUE)
     if(NOT EXISTS "${EP_BASE}/Source/${name}_EP/.git")
         color_message("Git clone ${repo_name} ...")
         execute_process(COMMAND ${GIT_EXECUTABLE} clone ${EP_URL}/${repo_name} ${name}_EP
@@ -164,37 +161,17 @@ function(find_extproject name)
             color_message("Git pull ${repo_name} ...")
             execute_process(COMMAND ${GIT_EXECUTABLE} pull
                WORKING_DIRECTORY  ${EP_BASE}/Source/${name}_EP
-               TIMEOUT ${PULL_TIMEOUT}
-               OUTPUT_VARIABLE PULL_OUTPUT)
-            file(WRITE ${EP_BASE}/Stamp/${name}_EP/${name}_EP-gitpull.txt "")  
-            if(PULL_OUTPUT)
-                string(SUBSTRING ${PULL_OUTPUT} 0 18 PULL_OUTPUT)
-                if(${PULL_OUTPUT} STREQUAL "Already up-to-date")
-                    set(HAS_CHANGES FALSE)                
-                endif()
-            else()
-                set(HAS_CHANGES FALSE)  # some error while git pull occured 
-            endif()
-        else()
-            set(HAS_CHANGES FALSE)  
+               TIMEOUT ${PULL_TIMEOUT})
+            file(WRITE ${EP_BASE}/Stamp/${name}_EP/${name}_EP-gitpull.txt "")              
         endif()        
-    endif()    
-    
-    if(NOT DEFINED ${name}_WITHARGS_TMP)
-        set(HAS_CHANGES TRUE)
-    elseif((${name}_WITHARGS EQUAL ${name}_WITHARGS_TMP) OR (${name}_WITHARGS STREQUAL ${name}_WITHARGS_TMP))
-    else()    
-        set(HAS_CHANGES TRUE)
-    endif()
-    
-    if(HAS_CHANGES OR NOT EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
-        execute_process(COMMAND ${CMAKE_COMMAND} ${EP_BASE}/Source/${name}_EP
-           ${find_extproject_CMAKE_ARGS}
-           WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP)  
-    endif()
+    endif() 
+
+    execute_process(COMMAND ${CMAKE_COMMAND} ${EP_BASE}/Source/${name}_EP
+       ${find_extproject_CMAKE_ARGS}
+       WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP)  
+       
     include(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake) 
     get_imported_targets(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake IMPOTED_TARGETS)
-    set(${name}_WITHARGS_TMP ${${name}_WITHARGS} CACHE INTERNAL "external options" FORCE)
     
     if(EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
         string(TOUPPER ${name}_FOUND IS_FOUND)
