@@ -181,7 +181,7 @@ function(find_extproject name)
     add_dependencies(${IMPOTED_TARGETS} ${name}_EP)  
     
     set(DEPENDENCY_LIB ${DEPENDENCY_LIB} ${IMPOTED_TARGETS} PARENT_SCOPE)   
-    set(IMPORTED_TARGET_LINK_LIB ${IMPORTED_TARGET_LINK_LIB} ${IMPOTED_TARGETS} PARENT_SCOPE)
+    set(TARGET_LINK_LIB ${TARGET_LINK_LIB} ${IMPOTED_TARGETS} PARENT_SCOPE)
     
     include_directories(${EP_BASE}/Install/${name}_EP/include)
     foreach (inc ${repo_include})
