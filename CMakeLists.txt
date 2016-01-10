@@ -25,16 +25,6 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
-cmake_policy(VERSION 2.8.12)
-if (POLICY CMP0022)
-  cmake_policy(SET CMP0022 OLD)
-endif()
-if (POLICY CMP0042)
-  cmake_policy(SET CMP0042 OLD) # osx rpath
-endif()
-if (POLICY CMP0011)
-  cmake_policy(SET CMP0011 OLD) # policy setting
-endif()
 
 project(lzma C)
 
