@@ -23,17 +23,6 @@
 set(TARGET_LINK_LIB) # ${TARGET_LINK_LIB} ""
 set(DEPENDENCY_LIB) # ${DEPENDENCY_LIB} ""
 set(WITHOPT ${WITHOPT} "")
-
-cmake_policy(VERSION 2.8.12)
-if (POLICY CMP0022)
-  cmake_policy(SET CMP0022 OLD)
-endif()
-if (POLICY CMP0042)
-  cmake_policy(SET CMP0042 NEW) # osx rpath
-endif()
-if (POLICY CMP0011)
-  cmake_policy(SET CMP0011 NEW) # policy setting
-endif()
        
 function(find_anyproject name)
 
