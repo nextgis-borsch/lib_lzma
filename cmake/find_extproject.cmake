@@ -171,17 +171,22 @@ function(find_extproject name)
        WORKING_DIRECTORY ${EP_BASE}/Build/${name}_EP)  
        
     include(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake) 
-    get_imported_targets(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake IMPOTED_TARGETS)
+    get_imported_targets(${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake IMPORTED_TARGETS)
     
     if(EXISTS "${EP_BASE}/Build/${name}_EP/${repo_project}-exports.cmake")
         string(TOUPPER ${name}_FOUND IS_FOUND)
         set(${IS_FOUND} TRUE PARENT_SCOPE)
     endif()
     
-    add_dependencies(${IMPOTED_TARGETS} ${name}_EP)  
+    add_dependencies(${IMPORTED_TARGETS} ${name}_EP)  
     
-    set(DEPENDENCY_LIB ${DEPENDENCY_LIB} ${IMPOTED_TARGETS} PARENT_SCOPE)   
-    set(TARGET_LINK_LIB ${TARGET_LINK_LIB} ${IMPOTED_TARGETS} PARENT_SCOPE)
+    set(DEPENDENCY_LIB ${DEPENDENCY_LIB} ${IMPORTED_TARGETS} PARENT_SCOPE) 
+    
+    set(IMPORTED_TARGET_PATH)
+    foreach(IMPORTED_TARGET ${IMPORTED_TARGETS})
+        set(IMPORTED_TARGET_PATH ${IMPORTED_TARGET_PATH} $<TARGET_LINKER_FILE:${IMPORTED_TARGET}>)
+    endforeach()
+    set(TARGET_LINK_LIB ${TARGET_LINK_LIB} ${IMPORTED_TARGET_PATH} PARENT_SCOPE)
     
     include_directories(${EP_BASE}/Install/${name}_EP/include)
     foreach (inc ${repo_include})
