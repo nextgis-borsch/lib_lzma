@@ -23,6 +23,7 @@
 set(TARGET_LINK_LIB) # ${TARGET_LINK_LIB} ""
 set(DEPENDENCY_LIB) # ${DEPENDENCY_LIB} ""
 set(WITHOPT ${WITHOPT} "")
+set(EXPORTS_PATHS)
        
 function(find_anyproject name)
 
@@ -105,6 +106,7 @@ function(find_anyproject name)
         set(DEPENDENCY_LIB ${DEPENDENCY_LIB} PARENT_SCOPE)    
     endif()
     set(WITHOPT ${WITHOPT} PARENT_SCOPE)
+    set(EXPORTS_PATHS ${EXPORTS_PATHS} PARENT_SCOPE)
 endfunction()
 
 function(target_link_extlibraries name)
@@ -119,5 +121,6 @@ function(target_link_extlibraries name)
 endfunction()
 
 function(write_ext_options)
+    set(WITHOPT "${WITHOPT}set(INCLUDE_EXPORTS_PATHS ${EXPORTS_PATHS})\n")
     file(WRITE ${CMAKE_BINARY_DIR}/ext_options.cmake ${WITHOPT})
 endfunction()
