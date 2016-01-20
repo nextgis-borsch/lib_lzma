@@ -53,7 +53,7 @@ function(find_anyproject name)
     if(WITH_${name})
         option(WITH_${name}_EXTERNAL "Set ON to use external ${name}" OFF)
         if(WITH_${name}_EXTERNAL)
-            include(find_extproject)
+            include(FindExtProject)
             find_extproject(${name} ${ARGN})
         else()
             # transfer some input options to find_package arguments

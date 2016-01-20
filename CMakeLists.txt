@@ -44,7 +44,7 @@ set(LZMA_REV_VERSION -1)
 check_version(LZMA_MAJOR_VERSION LZMA_MINOR_VERSION LZMA_REV_VERSION)
 set(VERSION ${LZMA_MAJOR_VERSION}.${LZMA_MINOR_VERSION}.${LZMA_REV_VERSION})
 
-include(find_anyproject)
+include(FindAnyProject)
 find_anyproject(ICONV)
 
 if(ICONV_FOUND)
