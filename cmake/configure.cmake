@@ -38,7 +38,7 @@ include(TestBigEndian)
 #set(gt_expression_test_code  "+ * ngettext (\"\", \"\", 0)")
 set(gt_expression_test_code  "")
 
-if(CMAKE_GENERATOR_TOOLSET MATCHES "*xp")
+if(CMAKE_GENERATOR_TOOLSET MATCHES "v([0-9]+)_xp")
     add_definitions(-D_WIN32_WINNT=0x0501)
 endif()
 
