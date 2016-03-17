@@ -38,6 +38,10 @@ include(TestBigEndian)
 #set(gt_expression_test_code  "+ * ngettext (\"\", \"\", 0)")
 set(gt_expression_test_code  "")
 
+if(CMAKE_GENERATOR_TOOLSET MATCHES "*xp")
+    add_definitions(-D_WIN32_WINNT=0x0501)
+endif()
+
 check_c_source_compiles("
     #include <libintl.h>
     extern int _nl_msg_cat_cntr;
