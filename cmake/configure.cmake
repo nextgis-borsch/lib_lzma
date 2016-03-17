@@ -347,7 +347,10 @@ if(UNIX)
 else( ) # WIN32 true if windows (32 and 64 bit)
 
     ## Check for Version ##
-    if( ${CMAKE_SYSTEM_VERSION} VERSION_GREATER 6.0 ) # Windows Vista and newer
+    if(CMAKE_GENERATOR_TOOLSET MATCHES "v([0-9]+)_xp")
+        set(MYTHREAD_WIN95 TRUE)
+        add_definitions(-DMYTHREAD_WIN95) 
+    elseif( ${CMAKE_SYSTEM_VERSION} VERSION_GREATER 6.0 ) # Windows Vista and newer
         set(MYTHREAD_VISTA TRUE)
         add_definitions(-DMYTHREAD_VISTA) 
     else() # Some other Windows
