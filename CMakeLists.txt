@@ -33,11 +33,41 @@ set(CMAKE_COLOR_MAKEFILE ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
-include(GNUInstallDirs)
+if(OSX_FRAMEWORK AND (BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS))
+  message(FATAL_ERROR "Only OSX_FRAMEWORK key or any or both BUILD_SHARED_LIBS
+                       and BUILD_STATIC_LIBS keys are permitted")
+endif()
 
-set(INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR} CACHE INTERNAL "Installation directory for executables" FORCE)
-set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directory for libraries" FORCE)
-set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE INTERNAL "Installation directory for headers" FORCE)
+if(OSX_FRAMEWORK)
+  set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/Applications" CACHE INTERNAL "Installation directory for executables" FORCE)
+  set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/Library/Frameworks" CACHE INTERNAL "Installation directory for libraries" FORCE)
+  set(SKIP_INSTALL_HEADERS ON)
+  set(SKIP_INSTALL_EXECUTABLES ON)
+  set(SKIP_INSTALL_FILES ON)
+  set(SKIP_INSTALL_EXPORT ON)
+
+  set(CMAKE_MACOSX_RPATH ON)
+
+  # use, i.e. don't skip the full RPATH for the build tree
+  set(CMAKE_SKIP_BUILD_RPATH  TRUE)
+
+  # when building, don't use the install RPATH already
+  # (but later on when installing)
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+
+  # the RPATH to be used when installing
+  set(CMAKE_INSTALL_RPATH "${INSTALL_LIB_DIR}")
+
+  # don't add the automatically determined parts of the RPATH
+  # which point to directories outside the build tree to the install RPATH
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+else()
+    include(GNUInstallDirs)
+
+    set(INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR} CACHE INTERNAL "Installation directory for executables" FORCE)
+    set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directory for libraries" FORCE)
+    set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE INTERNAL "Installation directory for headers" FORCE)
+endif()
 
 include(util)
 check_version(LZMA_MAJOR_VERSION LZMA_MINOR_VERSION LZMA_REV_VERSION)
@@ -54,7 +84,7 @@ if(MSVC)
     if(CMAKE_C_COMPILER_VERSION VERSION_LESS "18.0.31101.0")
         message(FATAL_ERROR "The compiled version is less than VC 2013 SP 4")
     endif()
-    
+
     add_definitions (-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_CRT_NON_CONFORMING_SWPRINTFS -D_CRT_SECURE_NO_DEPRECATE)
 endif()
 
@@ -161,7 +191,7 @@ if(ENABLE_THREADS)
     )
     set(PRIVATE_HDRS ${PRIVATE_HDRS}
     	common/outqueue.h
-    )    
+    )
 endif()
 
 if(HAVE_CHECK_CRC32)
@@ -185,7 +215,7 @@ if(HAVE_CHECK_CRC32)
             set(SRCS ${SRCS}
                 check/crc32_fast.c
             )
-        endif() 
+        endif()
     endif()
 endif()
 
@@ -211,7 +241,7 @@ if(HAVE_CHECK_CRC64)
             set(SRCS ${SRCS}
                 check/crc64_fast.c
             )
-        endif() 
+        endif()
     endif()
 endif()
 
@@ -308,8 +338,8 @@ if(HAVE_FILTER_DELTA)
     set(PRIVATE_HDRS ${PRIVATE_HDRS}
         delta/delta_common.h
         delta/delta_private.h
-    )    
-    set(SRCS ${SRCS} 
+    )
+    set(SRCS ${SRCS}
         delta/delta_common.c
     )
 endif()
@@ -317,17 +347,17 @@ endif()
 if(HAVE_ENCODER_DELTA AND HAVE_FILTER_DELTA)
     set(PRIVATE_HDRS ${PRIVATE_HDRS}
         delta/delta_encoder.h
-    )    
-    set(SRCS ${SRCS} 
+    )
+    set(SRCS ${SRCS}
         delta/delta_encoder.c
-    ) 
+    )
 endif()
 
 if(HAVE_DECODER_DELTA AND HAVE_FILTER_DELTA)
     set(PRIVATE_HDRS ${PRIVATE_HDRS}
         delta/delta_decoder.h
-    ) 
-    set(SRCS ${SRCS} 
+    )
+    set(SRCS ${SRCS}
         delta/delta_decoder.c
     )
 endif()
@@ -336,8 +366,8 @@ if(HAVE_FILTER_SIMPLE)
     set(PRIVATE_HDRS ${PRIVATE_HDRS}
         simple/simple_coder.h
         simple/simple_private.h
-    )    
-    set(SRCS ${SRCS} 
+    )
+    set(SRCS ${SRCS}
         simple/simple_coder.c
     )
 endif()
@@ -345,60 +375,60 @@ endif()
 if(HAVE_ENCODER_SIMPLE AND HAVE_FILTER_SIMPLE)
     set(PRIVATE_HDRS ${PRIVATE_HDRS}
         simple/simple_encoder.h
-    )    
-    set(SRCS ${SRCS} 
+    )
+    set(SRCS ${SRCS}
         simple/simple_encoder.c
-    ) 
+    )
 endif()
 
 if(HAVE_DECODER_SIMPLE AND HAVE_FILTER_SIMPLE)
     set(PRIVATE_HDRS ${PRIVATE_HDRS}
         simple/simple_decoder.h
-    ) 
-    set(SRCS ${SRCS} 
+    )
+    set(SRCS ${SRCS}
         simple/simple_decoder.c
     )
 endif()
 
 if(HAVE_FILTER_SIMPLE AND HAVE_FILTER_X86)
-    set(SRCS ${SRCS} 
+    set(SRCS ${SRCS}
         simple/x86.c
     )
 endif()
 
 if(HAVE_FILTER_SIMPLE AND HAVE_FILTER_POWERPC)
-    set(SRCS ${SRCS} 
+    set(SRCS ${SRCS}
         simple/powerpc.c
     )
 endif()
 
 if(HAVE_FILTER_SIMPLE AND HAVE_FILTER_IA64)
-    set(SRCS ${SRCS} 
+    set(SRCS ${SRCS}
         simple/ia64.c
     )
 endif()
 
 if(HAVE_FILTER_SIMPLE AND HAVE_FILTER_ARM)
-    set(SRCS ${SRCS} 
+    set(SRCS ${SRCS}
         simple/arm.c
     )
 endif()
 
 if(HAVE_FILTER_SIMPLE AND HAVE_FILTER_ARMTHUMB)
-    set(SRCS ${SRCS} 
+    set(SRCS ${SRCS}
         simple/armthumb.c
     )
 endif()
 
 if(HAVE_FILTER_SIMPLE AND HAVE_FILTER_SPARC)
-    set(SRCS ${SRCS} 
+    set(SRCS ${SRCS}
         simple/sparc.c
     )
 endif()
 
 if(WIN32)
     set(SRCS ${SRCS} liblzma_w32res.rc)
-    add_definitions(-D_WIN32 -D_WINDOWS -D_USRDLL) 
+    add_definitions(-D_WIN32 -D_WINDOWS -D_USRDLL)
     if(BUILD_SHARED_LIBS)
         add_definitions(-DHAVE_VISIBILITY -DDLL_EXPORT)
     else()
@@ -406,19 +436,29 @@ if(WIN32)
     endif()
 endif()
 
-report_version(${PROJECT_NAME} ${VERSION})    
+report_version(${PROJECT_NAME} ${VERSION})
 
 set(LIB_NAME ${PROJECT_NAME})
 if(BUILD_SHARED_LIBS)
     add_library(${LIB_NAME} SHARED ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS} ${PUBLIC_LZMA_HDRS})
     set_target_properties(${LIB_NAME} PROPERTIES DEFINE_SYMBOL LZMA_DLL)
     set_target_properties(${LIB_NAME} PROPERTIES SOVERSION 1)
-else()    
+elseif(OSX_FRAMEWORK)
+    add_library(${LIB_NAME} SHARED ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS} ${PUBLIC_LZMA_HDRS})
+    set_target_properties(${LIB_NAME} PROPERTIES
+      FRAMEWORK TRUE
+      FRAMEWORK_VERSION ${VERSION}
+      MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION}
+      MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
+      MACOSX_FRAMEWORK_IDENTIFIER org.liblzma.liblzma
+      XCODE_ATTRIBUTE_INSTALL_PATH "@rpath"
+      PUBLIC_HEADER "${PUBLIC_HDRS}")
+else()
     add_library(${LIB_NAME} STATIC ${SRCS} ${PUBLIC_HDRS} ${PRIVATE_HDRS} ${PUBLIC_LZMA_HDRS})
     set_target_properties(${LIB_NAME} PROPERTIES SOVERSION 1)
-endif()   
+endif()
 
-target_link_extlibraries(${LIB_NAME}) 
+target_link_extlibraries(${LIB_NAME})
 
 export(TARGETS ${LIB_NAME} FILE ${LIB_NAME}-exports.cmake EXPORT_LINK_INTERFACE_LIBRARIES)
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
@@ -436,13 +476,13 @@ if(UNIX)
 endif()
 
 if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
-    install(TARGETS ${LIB_NAME} 
+    install(TARGETS ${LIB_NAME}
         RUNTIME DESTINATION "${INSTALL_BIN_DIR}"
         ARCHIVE DESTINATION "${INSTALL_LIB_DIR}"
-        LIBRARY DESTINATION "${INSTALL_LIB_DIR}" )
+        LIBRARY DESTINATION "${INSTALL_LIB_DIR}"
+        FRAMEWORK DESTINATION "${INSTALL_LIB_DIR}")
 endif()
 if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL )
     install(FILES ${PUBLIC_HDRS} DESTINATION "${INSTALL_INC_DIR}")
     install(FILES ${PUBLIC_LZMA_HDRS} DESTINATION "${INSTALL_INC_DIR}/lzma")
 endif()
-
