@@ -46,22 +46,7 @@ if(OSX_FRAMEWORK)
   set(SKIP_INSTALL_EXECUTABLES ON)
   set(SKIP_INSTALL_FILES ON)
   set(SKIP_INSTALL_EXPORT ON)
-
   set(CMAKE_MACOSX_RPATH ON)
-
-  # use, i.e. don't skip the full RPATH for the build tree
-  set(CMAKE_SKIP_BUILD_RPATH  TRUE)
-
-  # when building, don't use the install RPATH already
-  # (but later on when installing)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-
-  # the RPATH to be used when installing
-  set(CMAKE_INSTALL_RPATH "@executable_path/../../../../Library/Frameworks")
-
-  # don't add the automatically determined parts of the RPATH
-  # which point to directories outside the build tree to the install RPATH
-  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 else()
     include(GNUInstallDirs)
 
@@ -73,6 +58,10 @@ endif()
 include(util)
 check_version(LZMA_MAJOR_VERSION LZMA_MINOR_VERSION LZMA_REV_VERSION)
 set(VERSION ${LZMA_MAJOR_VERSION}.${LZMA_MINOR_VERSION}.${LZMA_REV_VERSION})
+
+if(OSX_FRAMEWORK)
+    set(FRAMEWORK_VERSION "${LZMA_MAJOR_VERSION}")
+endif()
 
 include(FindAnyProject)
 find_anyproject(ICONV)
@@ -451,7 +440,7 @@ elseif(OSX_FRAMEWORK)
     )
     set_target_properties(${LIB_NAME} PROPERTIES
       FRAMEWORK TRUE
-      FRAMEWORK_VERSION ${VERSION}
+      FRAMEWORK_VERSION ${FRAMEWORK_VERSION}
       MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION}
       MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
       MACOSX_FRAMEWORK_IDENTIFIER org.liblzma.liblzma
