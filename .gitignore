@@ -32,8 +32,8 @@
 *.dSYM/
 
 # Build
-/build
-/inst
+build/
+inst/
 
 # tmp
 *~
