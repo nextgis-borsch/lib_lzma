@@ -52,8 +52,8 @@ check_c_source_compiles("
         return * gettext (\"\")${gt_expression_test_code} + _nl_msg_cat_cntr + *_nl_domain_bindings;
     }
     " ENABLE_NLS)
-#option ( ENABLE_NLS "Translation of program messages to the user's native language is requested" OFF)     
-  
+#option ( ENABLE_NLS "Translation of program messages to the user's native language is requested" OFF)
+
 check_include_files("sys/types.h" HAVE_SYS_TYPES_H)
 
 # FreeBSD  sys/types.h + sha256.h      libmd    SHA256_CTX     SHA256_Init
@@ -99,7 +99,7 @@ if(HAVE_MINIX_SHA2_H)
 endif()
 
 if(HAVE_COMMONCRYPTO_COMMONDIGEST_H OR HAVE_SHA256_H OR HAVE_SHA2_H OR HAVE_MINIX_SHA2_H)
-    set(HAVE_CC_SHA256_CTX TRUE)  
+    set(HAVE_CC_SHA256_CTX TRUE)
 endif()
 
 check_c_source_compiles("
@@ -126,7 +126,7 @@ check_c_source_compiles("
     {
         return SHA256_Init ();
     }" HAVE_SHA256_INIT)
-    
+
     check_c_source_compiles("
     #ifdef HAVE_SYS_TYPES_H
     # include <sys/types.h>
@@ -151,25 +151,25 @@ check_c_source_compiles("
     {
         return SHA256Init ();
     }" HAVE_SHA256INIT)
-    
-if(NOT HAVE_CC_SHA256_INIT AND NOT HAVE_SHA256_INIT AND NOT HAVE_SHA256INIT)    
+
+if(NOT HAVE_CC_SHA256_INIT AND NOT HAVE_SHA256_INIT AND NOT HAVE_SHA256INIT)
     set(USE_INTERNAL_SHA256 TRUE)
-endif()    
-    
+endif()
+
 check_c_source_compiles("
     #include <CoreFoundation/CFLocale.h>
     int main () {
         CFLocaleCopyCurrent();
         return 0;
     }" HAVE_CFLOCALECOPYCURRENT)
-    
+
 option(HAVE_CHECK_CRC32 "Enable CRC32 integrity check to build" ON)
 option(HAVE_CHECK_CRC64 "Enable CRC64 integrity check to build" ON)
 option(HAVE_CHECK_SHA256 "Enable SHA256 integrity check to build" ON)
 
 check_function_exists("clock_gettime" HAVE_CLOCK_GETTIME)
 check_function_exists("dcgettext" HAVE_DCGETTEXT)
-check_symbol_exists("CLOCK_MONOTONIC" "time.h" HAVE_DECL_CLOCK_MONOTONIC)    
+check_symbol_exists("CLOCK_MONOTONIC" "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 check_symbol_exists("program_invocation_name" "errno.h" HAVE_DECL_PROGRAM_INVOCATION_NAME)
 
 option(HAVE_FILTER_ARM "Enable arm filter to build" ON)
@@ -228,20 +228,20 @@ if(HAVE_ENCODER_ARM OR HAVE_ENCODER_ARMTHUMB OR HAVE_ENCODER_IA64 OR HAVE_ENCODE
     set(HAVE_ENCODER_SIMPLE ON)
 endif()
 
-check_include_files("fcntl.h" HAVE_FCNTL_H) 
+check_include_files("fcntl.h" HAVE_FCNTL_H)
 
 check_function_exists("futimens" HAVE_FUTIMENS)
 check_function_exists("futimes" HAVE_FUTIMES)
 check_function_exists("futimesat" HAVE_FUTIMESAT)
 
-check_include_files("getopt.h" HAVE_GETOPT_H) 
+check_include_files("getopt.h" HAVE_GETOPT_H)
 
 check_function_exists("getopt_long" HAVE_GETOPT_LONG)
 check_function_exists("gettext" HAVE_GETTEXT)
 
-check_include_files("immintrin.h" HAVE_IMMINTRIN_H) 
-check_include_files("inttypes.h" HAVE_INTTYPES_H) 
-check_include_files("limits.h" HAVE_LIMITS_H) 
+check_include_files("immintrin.h" HAVE_IMMINTRIN_H)
+check_include_files("inttypes.h" HAVE_INTTYPES_H)
+check_include_files("limits.h" HAVE_LIMITS_H)
 
 check_c_source_compiles("
     #include <CoreFoundation/CFPreferences.h>
@@ -250,7 +250,7 @@ check_c_source_compiles("
         CFPreferencesCopyAppValue(NULL, NULL);
         return 0;
     }" HAVE_CFPREFERENCESCOPYAPPVALUE)
-    
+
 check_c_source_compiles("
     #include <wchar.h>
     int main () {
@@ -261,7 +261,7 @@ check_c_source_compiles("
 	    return ! (sizeof state && (mbrtowc) (&wc, s, n, &state));
     }
     " HAVE_MBRTOWC)
-  
+
 check_include_files("memory.h" HAVE_MEMORY_H)
 
 #hc3,hc4,bt2,bt3,bt4
@@ -282,17 +282,17 @@ check_c_source_compiles("
         int i = PTHREAD_PRIO_INHERIT;
         return 0;
     }" HAVE_PTHREAD_PRIO_INHERIT)
-    
+
 option(HAVE_SMALL "Check if small size is preferred over speed" OFF)
 option(ENABLE_THREADS "Enable threading support" ON)
-# default is on but no code to build assembler crc32_x86.S via libtool  
+# default is on but no code to build assembler crc32_x86.S via libtool
 option(ENABLE_ASSEMBLER "Enable assembler optimizations" OFF)
-    
+
 check_include_files(stdbool.h HAVE_STDBOOL_H)
 if(NOT HAVE_STDBOOL_H)
   check_type_size(_Bool _BOOL)
-endif()    
-   
+endif()
+
 check_include_files("stdint.h" HAVE_STDINT_H)
 check_include_files("stdlib.h" HAVE_STDLIB_H)
 check_include_files("strings.h" HAVE_STRINGS_H)
@@ -308,10 +308,10 @@ check_include_files("sys/byteorder.h" HAVE_SYS_BYTEORDER_H)
 check_include_files("sys/endian.h" HAVE_SYS_ENDIAN_H)
 check_include_files("sys/param.h" HAVE_SYS_PARAM_H)
 check_include_files("sys/stat.h" HAVE_SYS_STAT_H)
-check_include_files("sys/time.h" HAVE_SYS_TIME_H)    
-check_include_files("sys/types.h" HAVE_SYS_TYPES_H)   
 check_include_files("sys/time.h" HAVE_SYS_TIME_H)
-    
+check_include_files("sys/types.h" HAVE_SYS_TYPES_H)
+check_include_files("sys/time.h" HAVE_SYS_TIME_H)
+
 check_type_size(uintptr_t UINTPTR_T)
 if(NOT HAVE_UINTPTR_T)
   if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
@@ -319,13 +319,13 @@ if(NOT HAVE_UINTPTR_T)
   else()
     set(uintptr_t "uint32_t")
   endif()
-endif()    
-   
+endif()
+
 check_include_files("unistd.h" HAVE_UNISTD_H)
-    
-check_function_exists("utime" HAVE_UTIME)    
+
+check_function_exists("utime" HAVE_UTIME)
 check_function_exists("utimes" HAVE_UTIMES)
-    
+
 check_c_source_compiles("
     extern __attribute__((__visibility__(\"hidden\"))) int hiddenvar;
     extern __attribute__((__visibility__(\"default\"))) int exportedvar;
@@ -334,37 +334,37 @@ check_c_source_compiles("
     void dummyfunc (void) {}
     int main (){
       return 0;
-    }    
+    }
     " HAVE_VISIBILITY)
-    
-check_function_exists("wcwidth" HAVE_WCWIDTH)   
-  
-check_symbol_exists("_mm_movemask_epi8" "immintrin.h" HAVE__MM_MOVEMASK_EPI8)    
-   
-if(UNIX)    
-    set(MYTHREAD_POSIX TRUE)  
-    add_definitions(-DMYTHREAD_POSIX) 
+
+check_function_exists("wcwidth" HAVE_WCWIDTH)
+
+check_symbol_exists("_mm_movemask_epi8" "immintrin.h" HAVE__MM_MOVEMASK_EPI8)
+
+if(UNIX)
+    set(MYTHREAD_POSIX TRUE)
+    add_definitions(-DMYTHREAD_POSIX)
 else( ) # WIN32 true if windows (32 and 64 bit)
 
     ## Check for Version ##
     if(CMAKE_GENERATOR_TOOLSET MATCHES "v([0-9]+)_xp")
         set(MYTHREAD_WIN95 TRUE)
-        add_definitions(-DMYTHREAD_WIN95) 
+        add_definitions(-DMYTHREAD_WIN95)
     elseif( ${CMAKE_SYSTEM_VERSION} VERSION_GREATER 6.0 ) # Windows Vista and newer
         set(MYTHREAD_VISTA TRUE)
-        add_definitions(-DMYTHREAD_VISTA) 
+        add_definitions(-DMYTHREAD_VISTA)
     else() # Some other Windows
         set(MYTHREAD_WIN95 TRUE)
-        add_definitions(-DMYTHREAD_WIN95) 
+        add_definitions(-DMYTHREAD_WIN95)
     endif()
 
-endif()    
-    
+endif()
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(NDEBUG TRUE)
-endif()   
+endif()
 
-check_type_size(size_t SIZEOF_SIZE_T)    
+check_type_size(size_t SIZEOF_SIZE_T)
 
 check_include_file("ctype.h" HAVE_CTYPE_H)
 
@@ -414,7 +414,7 @@ set(PACKAGE_NAME "lib${PACKAGE}")
 set(PACKAGE_VERSION ${VERSION})
 set(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_URL "http://tukaani.org/xz/")
+set(PACKAGE_BUGREPORT "https://github.com/nextgis-borsch/lib_lzma/issuses")
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h IMMEDIATE @ONLY)
-add_definitions(-DHAVE_CONFIG_H) 
-
+add_definitions(-DHAVE_CONFIG_H)
