@@ -66,8 +66,9 @@ if(OSX_FRAMEWORK)
 endif()
 
 if(WIN32 AND WITH_ICONV)
-    set(WITH_ICONV_EXTERNAL ON)
+    set(WITH_ICONV_EXTERNAL ON CACHE INTERNAL "Force use external iconv on windows" FORCE)
 endif()
+
 include(FindAnyProject)
 find_anyproject(ICONV)
 
