@@ -546,3 +546,8 @@ typedef int64_t intmax_t;
 #if !defined(HAVE_UINTMAX_T)
 typedef uint64_t uintmax_t;
 #endif
+
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+typedef unsigned DWORD;
+// #define DWORD unsigned
+#endif
