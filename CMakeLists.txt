@@ -65,10 +65,6 @@ if(OSX_FRAMEWORK)
     set(INSTALL_CMAKECONF_DIR ${INSTALL_LIB_DIR}/lib${PROJECT_NAME}.framework/Versions/${FRAMEWORK_VERSION}/Resources/CMake CACHE INTERNAL "Installation directory for cmake config files" FORCE)
 endif()
 
-if(WIN32 AND WITH_ICONV)
-    set(WITH_ICONV_EXTERNAL ON CACHE INTERNAL "Force use external iconv on windows" FORCE)
-endif()
-
 include(FindAnyProject)
 find_anyproject(ICONV)
 
