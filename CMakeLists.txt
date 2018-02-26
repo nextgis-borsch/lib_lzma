@@ -477,7 +477,7 @@ set(lzmainfo_SRC
 )
 if(WIN32)
     set(lzmainfo_SRC ${lzmainfo_SRC}
-        lzmainfo_w32res.rc
+        lzmainfo/lzmainfo_w32res.rc
     )
 endif()
 add_executable(lzmainfo ${lzmainfo_SRC})
@@ -493,7 +493,7 @@ set(xzdec_SRC
 )
 if(WIN32)
     set(xzdec_SRC ${xzdec_SRC}
-        lzmadec_w32res.rc
+        xzdec/lzmadec_w32res.rc
     )
 endif()
 add_executable(xzdec ${xzdec_SRC})
@@ -523,7 +523,7 @@ set(xz_SRC
 )
 if(WIN32)
     set(xz_SRC ${xz_SRC}
-        xz_w32res.rc
+        xz/xz_w32res.rc
     )
 endif()
 add_executable(xz ${xz_SRC})
