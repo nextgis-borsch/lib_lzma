@@ -65,10 +65,10 @@ if(OSX_FRAMEWORK)
     set(INSTALL_CMAKECONF_DIR ${INSTALL_LIB_DIR}/lib${PROJECT_NAME}.framework/Versions/${FRAMEWORK_VERSION}/Resources/CMake CACHE INTERNAL "Installation directory for cmake config files" FORCE)
 endif()
 
-include(FindAnyProject)
 if(WIN32 AND WITH_ICONV)
     set(WITH_ICONV_EXTERNAL ON)
 endif()
+include(FindAnyProject)
 find_anyproject(ICONV)
 
 if(ICONV_FOUND)
@@ -470,66 +470,75 @@ if(UNIX)
 endif()
 
 # Executables ------------------------------------------------------------------
-set(lzmainfo_SRC
-    lzmainfo/lzmainfo.c
-    common/tuklib_progname.c
-	common/tuklib_exit.c
-)
-if(WIN32)
-    set(lzmainfo_SRC ${lzmainfo_SRC}
-        lzmainfo/lzmainfo_w32res.rc
+option(BUILD_APPS "Build lzmainfo, xzdec, xz console utillities" OFF)
+if(BUILD_APPS)
+    set(lzmainfo_SRC
+        lzmainfo/lzmainfo.c
+        common/tuklib_progname.c
+    	common/tuklib_exit.c
     )
-endif()
-add_executable(lzmainfo ${lzmainfo_SRC})
-target_link_libraries(lzmainfo ${LIB_NAME})
-if(OSX_FRAMEWORK)
-    set_target_properties(lzmainfo PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
-endif()
+    if(WIN32)
+        set(lzmainfo_SRC ${lzmainfo_SRC}
+            lzmainfo/lzmainfo_w32res.rc
+        )
+    endif()
+    add_executable(lzmainfo ${lzmainfo_SRC})
+    target_link_libraries(lzmainfo ${LIB_NAME})
+    if(OSX_FRAMEWORK)
+        set_target_properties(lzmainfo PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
+    endif()
 
-set(xzdec_SRC
-    xzdec/xzdec.c
-    common/tuklib_progname.c
-	common/tuklib_exit.c
-)
-if(WIN32)
-    set(xzdec_SRC ${xzdec_SRC}
-        xzdec/lzmadec_w32res.rc
+    set(xzdec_SRC
+        xzdec/xzdec.c
+        common/tuklib_progname.c
+    	common/tuklib_exit.c
     )
-endif()
-add_executable(xzdec ${xzdec_SRC})
-target_link_libraries(xzdec ${LIB_NAME})
-if(OSX_FRAMEWORK)
-    set_target_properties(xzdec PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
-endif()
+    if(WIN32)
+        set(xzdec_SRC ${xzdec_SRC}
+            xzdec/lzmadec_w32res.rc
+        )
+    endif()
+    add_executable(xzdec ${xzdec_SRC})
+    target_link_libraries(xzdec ${LIB_NAME})
+    if(OSX_FRAMEWORK)
+        set_target_properties(xzdec PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
+    endif()
 
-set(xz_SRC
-    xz/args.c
-    xz/coder.c
-    xz/file_io.c
-    xz/hardware.c
-    xz/main.c
-    xz/message.c
-    xz/mytime.c
-    xz/options.c
-    xz/signals.c
-    xz/suffix.c
-    xz/util.c
-    common/tuklib_open_stdxxx.c
-    common/tuklib_progname.c
-    common/tuklib_exit.c
-    common/tuklib_mbstr_width.c
-    common/tuklib_mbstr_fw.c
-    xz/list.c
-)
-if(WIN32)
-    set(xz_SRC ${xz_SRC}
-        xz/xz_w32res.rc
+    set(xz_SRC
+        xz/args.c
+        xz/coder.c
+        xz/file_io.c
+        xz/hardware.c
+        xz/main.c
+        xz/message.c
+        xz/mytime.c
+        xz/options.c
+        xz/signals.c
+        xz/suffix.c
+        xz/util.c
+        common/tuklib_open_stdxxx.c
+        common/tuklib_progname.c
+        common/tuklib_exit.c
+        common/tuklib_mbstr_width.c
+        common/tuklib_mbstr_fw.c
+        xz/list.c
     )
-endif()
-add_executable(xz ${xz_SRC})
-target_link_libraries(xz ${LIB_NAME})
-if(OSX_FRAMEWORK)
-    set_target_properties(xz PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
+    if(WIN32)
+        set(xz_SRC ${xz_SRC}
+            xz/xz_w32res.rc
+        )
+    endif()
+    add_executable(xz ${xz_SRC})
+    target_link_libraries(xz ${LIB_NAME})
+    if(OSX_FRAMEWORK)
+        set_target_properties(xz PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
+    endif()
+
+    if(NOT SKIP_INSTALL_EXECUTABLES AND NOT SKIP_INSTALL_ALL )
+        install(TARGETS xz xzdec lzmainfo
+            RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+        )
+    endif()
 endif()
 
 string(TOUPPER ${PACKAGE_NAME} PACKAGE_UPPER_NAME)
@@ -547,12 +556,6 @@ endif()
 if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL )
     install(FILES ${PUBLIC_HDRS} DESTINATION "${INSTALL_INC_DIR}")
     install(FILES ${PUBLIC_LZMA_HDRS} DESTINATION "${INSTALL_INC_DIR}/lzma")
-endif()
-
-if(NOT SKIP_INSTALL_EXECUTABLES AND NOT SKIP_INSTALL_ALL )
-    install(TARGETS xz xzdec lzmainfo
-        RUNTIME DESTINATION ${INSTALL_BIN_DIR}
-    )
 endif()
 
 # Testing ======================================================================
