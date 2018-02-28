@@ -47,6 +47,7 @@ if(OSX_FRAMEWORK)
     set(SKIP_INSTALL_FILES ON)
     set(SKIP_INSTALL_EXPORT ON)
     set(CMAKE_MACOSX_RPATH ON)
+    set(INSTALL_CMAKECONF_DIR ${INSTALL_LIB_DIR}/lib${PROJECT_NAME}.framework/Resources/CMake CACHE INTERNAL "Installation directory for cmake config files" FORCE)
 else()
     include(GNUInstallDirs)
 
@@ -62,7 +63,6 @@ set(VERSION ${LZMA_MAJOR_VERSION}.${LZMA_MINOR_VERSION}.${LZMA_REV_VERSION})
 
 if(OSX_FRAMEWORK)
     set(FRAMEWORK_VERSION "${LZMA_MAJOR_VERSION}")
-    set(INSTALL_CMAKECONF_DIR ${INSTALL_LIB_DIR}/lib${PROJECT_NAME}.framework/Versions/${FRAMEWORK_VERSION}/Resources/CMake CACHE INTERNAL "Installation directory for cmake config files" FORCE)
 endif()
 
 include(FindAnyProject)
