@@ -102,14 +102,24 @@ macro( find_exthost_program )
     endif()
 endmacro()
 
+function(get_prefix prefix)
+  if(BUILD_STATIC_LIBS)
+  set(STATIC_PREFIX "static-")
+    if(ANDROID)
+      set(STATIC_PREFIX "${STATIC_PREFIX}android-${ANDROID_ABI}-")
+    elseif(IOS)
+      set(STATIC_PREFIX "${STATIC_PREFIX}${IOS_PLATFORM}${IOS_ARCH}-${ANDROID_ABI}-")
+    endif()
+  endif()
+  set(${prefix} ${STATIC_PREFIX} PARENT_SCOPE)
+endfunction()
+
 
 function(get_cpack_filename ver name)
     get_compiler_version(COMPILER)
-    if(BUILD_STATIC_LIBS)
-        set(STATIC_PREFIX "static-")
-    endif()
+    get_prefix(STATIC_PREFIX)
 
-    set(${name} lib${PROJECT_NAME}-${STATIC_PREFIX}${ver}-${COMPILER} PARENT_SCOPE)
+    set(${name} ${PROJECT_NAME}-${ver}-${STATIC_PREFIX}${COMPILER} PARENT_SCOPE)
 endfunction()
 
 function(get_compiler_version ver)
