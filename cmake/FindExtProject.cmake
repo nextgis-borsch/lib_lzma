@@ -30,10 +30,10 @@ function(color_message text)
 
 endfunction()
 
-function(get_binary_package url repo repo_type repo_id exact_version download_url name)
+function(get_binary_package url repo repo_type repo_id exact_version is_static download_url name)
     include(util)
     get_compiler_version(COMPILER)
-    get_prefix(STATIC_PREFIX)
+    get_prefix(STATIC_PREFIX ${is_static})
 
     if(repo_type STREQUAL "github") # TODO: Add gitlab here.
         if(NOT EXISTS ${CMAKE_BINARY_DIR}/${repo}_latest.json)
@@ -138,8 +138,13 @@ function(find_extproject name)
     if(NOT DEFINED repo_bin_type)
         set(repo_bin_type ${repo_type})
     endif()
+    if(NOT DEFINED repo_bin_id)
+        set(repo_bin_id 0)
+    endif()
 
-    get_binary_package(${repo_bin_url} ${repo_bin} ${repo_bin_type} ${repo_bin_id} ${TEST_VERSION} BINARY_URL BINARY_NAME)
+    set(IS_STATIC NOT ${find_extproject_SHARED})
+
+    get_binary_package(${repo_bin_url} ${repo_bin} ${repo_bin_type} ${repo_bin_id} ${TEST_VERSION} ${IS_STATIC} BINARY_URL BINARY_NAME)
 
     if(BINARY_URL)
         # Download binary build files.
@@ -162,8 +167,24 @@ function(find_extproject name)
         # Execute find_package and send version, libraries, includes upper cmake script.
         # The CMake folder in root folder is prefered
         string(TOUPPER ${name} UPPER_NAME)
+        string(TOLOWER ${name} LOWER_NAME)
         if(CMAKE_CROSSCOMPILING)
-            set(${UPPER_NAME}_DIR ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${name}/CMake)
+            if(find_extproject_NAMES)
+                foreach(PNAME ${find_extproject_NAMES})
+                    if(EXISTS ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${PNAME}/CMake)
+                        set(${name}_DIR ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${PNAME}/CMake)
+                        break()
+                    endif()
+                endforeach()       
+            else()
+                if(EXISTS ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${name}/CMake)
+                    set(${name}_DIR ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${name}/CMake)
+                elseif(EXISTS ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${UPPER_NAME}/CMake)
+                    set(${name}_DIR ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${UPPER_NAME}/CMake)
+                elseif(EXISTS ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${LOWER_NAME}/CMake)
+                    set(${name}_DIR ${EXT_INSTALL_DIR}/${BINARY_NAME}/share/${LOWER_NAME}/CMake)
+                endif()
+            endif()     
         elseif(OSX_FRAMEWORK AND NOT EXISTS ${EXT_INSTALL_DIR}/${BINARY_NAME}/CMake AND EXISTS ${EXT_INSTALL_DIR}/${BINARY_NAME}/Library/Frameworks)
             set(CMAKE_PREFIX_PATH ${EXT_INSTALL_DIR}/${BINARY_NAME}/Library/Frameworks)
         else()
@@ -179,7 +200,7 @@ function(find_extproject name)
         endif()
 
         find_package(${name} NO_MODULE ${FIND_PROJECT_ARG})
-
+        
         set(${UPPER_NAME}_FOUND ${${UPPER_NAME}_FOUND} PARENT_SCOPE)
         set(${UPPER_NAME}_VERSION ${${UPPER_NAME}_VERSION} PARENT_SCOPE)
         set(${UPPER_NAME}_VERSION_STR ${${UPPER_NAME}_VERSION_STR} PARENT_SCOPE)
