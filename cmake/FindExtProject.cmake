@@ -142,7 +142,13 @@ function(find_extproject name)
         set(repo_bin_id 0)
     endif()
 
-    set(IS_STATIC NOT ${find_extproject_SHARED})
+    if(NOT DEFINED find_extproject_SHARED AND (BUILD_SHARED_LIBS OR OSX_FRAMEWORK))
+        set(IS_STATIC NO)
+    elseif(find_extproject_SHARED)
+        set(IS_STATIC NO)
+    else()
+        set(IS_STATIC YES)
+    endif()
 
     get_binary_package(${repo_bin_url} ${repo_bin} ${repo_bin_type} ${repo_bin_id} ${TEST_VERSION} ${IS_STATIC} BINARY_URL BINARY_NAME)
 
