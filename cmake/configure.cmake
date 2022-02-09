@@ -98,9 +98,30 @@ if(HAVE_MINIX_SHA2_H)
     set(HAVE_SHA256_INIT TRUE)
 endif()
 
-if(HAVE_COMMONCRYPTO_COMMONDIGEST_H OR HAVE_SHA256_H OR HAVE_SHA2_H OR HAVE_MINIX_SHA2_H)
-    set(HAVE_CC_SHA256_CTX TRUE)
-endif()
+check_c_source_compiles("
+    #ifdef HAVE_SYS_TYPES_H
+    # include <sys/types.h>
+    #endif
+    #ifdef HAVE_COMMONCRYPTO_COMMONDIGEST_H
+    # include <CommonCrypto/CommonDigest.h>
+    #endif
+    #ifdef HAVE_SHA256_H
+    # include <sha256.h>
+    #endif
+    #ifdef HAVE_SHA2_H
+    # include <sha2.h>
+    #endif
+    #ifdef HAVE_MINIX_SHA2_H
+    # include <minix/sha2.h>
+    #endif
+    #ifdef __cplusplus
+    extern \"C\"
+    #endif
+    char SHA256_Init ();
+    int main ()
+    {
+        return SHA256_Init ();
+    }" HAVE_SHA256_INIT)
 
 check_c_source_compiles("
     #ifdef HAVE_SYS_TYPES_H
